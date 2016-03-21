@@ -19,7 +19,7 @@ var handler = function(request, response){
       var body = Buffer.concat(buffers)
       try {
         var json = JSON.parse(body)
-        if(json.hook.config.secret!=='sun') return console.log('json.hook.config.secret is '+json.hook.config.secret)
+        if(json.repository.name!=='study_python') return console.log('json.repository.name is '+json.repository.name)
         response.write('now update')
         process.nextTick(function(){
           child_process.exec('sh ./update.sh')
