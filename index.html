@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>python runner</title>
+    <style media="screen">
+      #output {
+        width: 100%;
+        height: 400px;
+      }
+      #command {
+        margin-top: 30px;
+        width: 75%;
+      }
+      #file-path {
+        width: 50%;
+      }
+      #file-list {
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <select id="file-list">
+    </select>
+    <button id="refreshFileListButton" type="button">force fresh</button>
+    <br>
+    <input type="text" id="file-path" name="file-path" value="./files/circumference.py">
+    <button id="runner" type="button" name="start-connect">run</button>
+    <button id="stopper" type="button" name="button">stop</button>
+    <hr>
+    <textarea id="output" rows="8" cols="40"></textarea>
+    <br>
+    <input type="text" id="command" name="command-input" value="">
+    <button type="button" id="send-command" disable name="send-command-button">send</button>
+    <script src="./node_modules/socket.io-client/socket.io.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      'use strict'
+      var runner = document.getElementById('runner')
+      var filePath = document.getElementById('file-path')
+      var output = document.getElementById('output')
+      var command = document.getElementById('command')
+      var sendCommand = document.getElementById('send-command')
+      var fileList = document.getElementById('file-list')
+      var refreshFileList  = document.getElementById('refreshFileListButton')
+      var stopper = document.getElementById('stopper')
+      sendCommand.disabled = true
+      stopper.disabled = true
+      var io = window.io
+      var cpId
+      var socket = io('http://ali.wusisu.com:5466');
+      // var socket = io('http://127.0.0.1:5466');
+      socket.on('newcp', function(data){
+        sendCommand.disabled = false
+        output.value = '= running ' + data + '\n'
+        runner.disabled = true
+        stopper.disabled = false
+      })
+      socket.on('data', function (data) {
+        output.value += '> ' + data + '\n'
+      })
+      socket.on('cperr', function (err){
+        output.value += '!!error: ' + err + '\n'
+      })
+      socket.on('refresh', function(data){
+        fileList.innerHTML = data.map(function(f){
+          return `<option value="${f}">${f}</option>`
+        }).join(' ')
+        output.value += '= refreshing finished. ' + data.length + ' files fetched.' + '\n'
+        filePath.value = fileList.selectedOptions[0].value
+      })
+      socket.on('close', function(data){
+        output.value += '= ' + data + '\n'
+        sendCommand.disabled = true
+        stopper.disabled = true
+        runner.disabled = false
+      })
+      fileList.onchange = function(){
+        filePath.value = fileList.selectedOptions[0].value
+      }
+      runner.onclick = function(){
+        output.value += '= ask for running: ' + filePath.value
+        cpId = (new Date).getTime()
+        socket.emit('run', {path:filePath.value})
+      }
+      refreshFileList.onclick = function(){
+        socket.emit('refresh', {force:true})
+        output.value += '= ask for refreshing the file list ' + '\n'
+      }
+      sendCommand.onclick = function(){
+        socket.emit('command', command.value + '\n')
+        output.value += '< ' + command.value + '\n'
+        command.value = ''
+      }
+      socket.emit('refresh')
+    </script>
+  </body>
+</html>

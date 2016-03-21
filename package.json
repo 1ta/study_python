@@ -1,0 +1,15 @@
+{
+  "name": "study_python",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "run": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Wu Sisu <i@wusisu.com>",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^1.4.5"
+  }
+}
