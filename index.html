@@ -90,6 +90,9 @@
         socket.emit('refresh', {force:true})
         output.value += '= ask for refreshing the file list ' + '\n'
       }
+      stopper.onclick = function(){
+        socket.emit('close')
+      }
       var onSendCommand = function(){
         socket.emit('command', command.value + '\n')
         output.value += '< ' + command.value + '\n'
