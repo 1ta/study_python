@@ -25,4 +25,4 @@ while count_left > 0:
 if count_left == 0:
     print("Sorry,you lose the game! Good luck next time!")
 else:
-    print("Sorry that you leave the game! Good luck next time!")
+    print("88 leave the game! Good luck next time!")
