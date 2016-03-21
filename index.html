@@ -57,6 +57,7 @@
         output.value = '= running ' + data + '\n'
         runner.disabled = true
         stopper.disabled = false
+        command.focus()
       })
       socket.on('data', function (data) {
         output.value += '> ' + data + '\n'
@@ -89,11 +90,15 @@
         socket.emit('refresh', {force:true})
         output.value += '= ask for refreshing the file list ' + '\n'
       }
-      sendCommand.onclick = function(){
+      var onSendCommand = function(){
         socket.emit('command', command.value + '\n')
         output.value += '< ' + command.value + '\n'
         command.value = ''
       }
+      command.onkeydown= function(){
+        if(event.keyCode==13) onSendCommand()
+      }
+      sendCommand.onclick = onSendCommand
       socket.emit('refresh')
     </script>
   </body>
