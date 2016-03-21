@@ -6,10 +6,34 @@ var http = require('http')
 var child_process = require('child_process')
 var fs = require('fs')
 
-
 var handler = function(request, response){
   console.info('connection comes')
+  // request.pipe(process.stdout)
+  if(request.url === '/sun/update' && request.method==='POST') {
+    var buffers = []
+    request.on('data', function(data){
+      buffers.push(data)
+    })
+    request.on('end', function(){
+      console.info('request end');
+      var body = Buffer.concat(buffers)
+      try {
+        var json = JSON.parse(body)
+        if(json.hook.config.secret!=='sun') return console.log('json.hook.config.secret is '+json.hook.config.secret)
+        response.write('now update')
+        process.nextTick(function(){
+          child_process.exec('sh ./update.sh')
+        })
+      } catch (e) {
+        response.write('error: ' + e.toString())
+      } finally {
+        response.end()
+      }
+    })
+    return
+  }
   response.end('ok')
+
 }
 
 var lookForwardFiles = function(path){
