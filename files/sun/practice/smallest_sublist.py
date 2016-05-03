@@ -1,0 +1,36 @@
+class Solution:
+    """
+    @param nums: a list of integers
+    @return: A integer denote the sum of minimum subarray
+    """
+    def minSubArray(self, nums):
+        def FindCross(nums,left,right):
+            mid = int((left+right+1)/2)
+            l_sum,sum_l = +float("inf"),0
+            for i in nums[left:mid][::-1]:
+                sum_l += i
+                if sum_l < l_sum:
+                    l_sum = sum_l
+            r_sum,sum_r = +float("inf"),0
+            for j in nums[mid:right]:
+                sum_r += j
+                if sum_r < r_sum:
+                    r_sum = sum_r
+            return l_sum+r_sum
+        def FindSubArr(nums, left, right):
+            if left == right - 1:
+                return nums[left]
+            else:
+                mid = int((right + left + 1) /2)
+                l_sum = FindSubArr(nums, left, mid)
+                r_sum = FindSubArr(nums, mid, right)
+                c_sum = FindCross(nums, left, right)
+            return min([l_sum, r_sum , c_sum])
+        left = 0
+        right = len(nums)
+        if right <= 1:
+            return sum(nums)
+        return FindSubArr(nums,left,right)
+
+
+print (Solution().maxSubArray([1,-1,-2,1]))

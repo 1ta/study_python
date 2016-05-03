@@ -1,8 +1,10 @@
-def fibnacci(n):
-    if n == 1:
-        return 0
-    if n == 2:
-        return 1
-    return = fibnacci(n-1) + fibnacci(n-2)
+def fab(n):
+  if n==1:
+    return 0
+  if n==2:
+    return 1
+  else:
+    result=fab(n-1)+fab(n-2)
+    return result
 
-print(fibnacci(10))
+print(fab(10))
