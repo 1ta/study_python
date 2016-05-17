@@ -14,8 +14,8 @@ class Solution:
                   Reverse it in-place.
     """
     def reverse(self, head):
-        current = Null
-        pre = Null
+        current = None
+        pre = None
         if head.next == None or head == None:
             return head
         while head.next != None:
